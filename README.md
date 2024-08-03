@@ -47,7 +47,7 @@ go mod tidy
 ### Actualiza las variables del launch.json con la informacion necesaria:
 ```bash
 "POSTGRES_SERVER": "localhost",
-"POSTGRES_DATABASE": "favjobs",
+"POSTGRES_DATABASE": "testdb",
 "POSTGRES_USER": "postgres",
 "POSTGRES_PASSWORD": "root",
 "POSTGRES_PORT": "5432"
@@ -67,7 +67,6 @@ go run main.go
 ## Estructura de los Paquetes
 
 - **.vscode**: Archivo con las variables necesarias para ejecutar el proyecto en modo debug.
-- **cmd/constants**: Contiene el archivo de constantes que se ocupan en el proyecto.
 - **cmd/constants**: Contiene el archivo de constantes que se ocupan en el proyecto.
 - **cmd/httpserver**: Contiene la configuración para levantar el server http y sus respectivas rotas.
 - **cmd**: Contiene el archivo de main para arrancar el proyecto.
