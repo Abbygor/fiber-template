@@ -73,8 +73,8 @@ go run main.go
 - **cmd/httpserver**: Contiene la configuración para levantar el server http y sus respectivas rotas.
 - **cmd**: Contiene el archivo de main para arrancar el proyecto.
 - **internal/app**: Contiene la lógica de la aplicación, incluyendo controladores, repositorios y servicios.
-- **internal/container**: Contiene la inicialización y gestión de dependencias.
 - **internal/config**: Contiene la configuración de la aplicación.
+- - **internal/container**: Contiene la inicialización y gestión de dependencias.
 - **internal/models**: Contiene los modelos de datos específicos de la aplicación.
 - **pkg/gorm**: Maneja la conexión a la base de datos.
 
