@@ -1,4 +1,4 @@
-# Fiber CRUD API
+# Fiber Template API
 
 Este es un proyecto template de ejemplo que utiliza Fiber, GORM y PostgreSQL para implementar un API REST. Se sigue una estructura modular y buenas prácticas en Go.
 
