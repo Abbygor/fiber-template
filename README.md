@@ -16,6 +16,11 @@ fiber-template/
 │   │   ├── http_server.go
 │   |   └── routes.go
 │   └── main.go
+├── docker/
+│   ├── postgres/
+│   │   ├── Dockerfile
+│   |   └── initDB.sql
+│   └── docker-compose.yaml
 ├── internal/
 │   ├── app/
 │   │   ├── health/
@@ -72,11 +77,24 @@ go run main.go
 - **cmd/constants**: Contiene el archivo de constantes que se ocupan en el proyecto.
 - **cmd/httpserver**: Contiene la configuración para levantar el server http y sus respectivas rotas.
 - **cmd**: Contiene el archivo de main para arrancar el proyecto.
+- **docker**: Contiene los archivo necesarios para realizar pruebas en local (devcontainers).
+- **docker/postgres**: Contiene los archivos para iniciar el contenedor con la BD, 
 - **internal/app**: Contiene la lógica de la aplicación, incluyendo controladores, repositorios y servicios.
 - **internal/config**: Contiene la configuración de la aplicación.
 - - **internal/container**: Contiene la inicialización y gestión de dependencias.
 - **internal/models**: Contiene los modelos de datos específicos de la aplicación.
 - **pkg/gorm**: Maneja la conexión a la base de datos.
+
+## Para realizar prebas en local
+1. Ir a la carpeta **docker**
+```bash
+cd docker/
+```
+2. Ejecutar la construcion de los contenedores
+```bash
+docker-compose up
+```
+3. Con esto deberia levantar el contenedor de la base de datos y el health y health/dependencies deberian funcionar correctamente (modificar el archivo docker-compose.yaml segun sea requerido, agregando o quitando servicios).
 
 ## Tecnologías Utilizadas
 

@@ -14,7 +14,7 @@
                 "PORT": "4001",
                 "ENV": "local",
                 "POSTGRES_SERVER": "localhost",
-                "POSTGRES_DATABASE": "favjobs",
+                "POSTGRES_DATABASE": "books",
                 "POSTGRES_USER": "postgres",
                 "POSTGRES_PASSWORD": "root",
                 "POSTGRES_PORT": "5432"
