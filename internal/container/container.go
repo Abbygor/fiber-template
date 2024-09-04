@@ -22,7 +22,7 @@ func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	dbGorm := gorm.NewDBGorm(config)
 	db, err := dbGorm.Create()
 	if err != nil {
-		l.Error().Str("module", "container").Str("function", "Build").Msg(err.Error())
+		l.Fatal().Str("module", "container").Str("function", "Build").Msg(err.Error())
 	}
 
 	healthRepository := health.NewHealthDatabaseRepository(config, db)
