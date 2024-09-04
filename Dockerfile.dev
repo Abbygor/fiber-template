@@ -1,0 +1,26 @@
+FROM golang:1.22-alpine as builder
+
+WORKDIR /go/src/fiber-template
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN GOOS=linux \
+    GOARCH=amd64 \
+    go build -buildvcs=false -tags musl,appsec -o fiber-template ./cmd/main.go
+
+# Verifica que el binario esté presente y tenga permisos
+RUN ls -l /go/src/fiber-template/fiber-template
+
+FROM alpine:latest
+COPY --from=builder /go/src/fiber-template/fiber-template .
+
+# Verifica que el binario esté en la imagen final
+RUN ls -l /fiber-template
+
+ENV TZ="America/Mexico_City"
+CMD [ "/fiber-template" ]
+EXPOSE 4001
