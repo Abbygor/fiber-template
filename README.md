@@ -61,8 +61,18 @@ go mod tidy
 ```
 Inicia la base de datos PostgreSQL y asegúrate de que las credenciales en el archivo launch.json son correctas.
 
-### Ejecución
-Para ejecutar el proyecto:
+## Ejecuciónde forma local
+1. Ir a la carpeta **docker**
+```bash
+cd docker/
+```
+2. Ejecutar la construcion de los contenedores
+```bash
+docker-compose up
+```
+3. Con esto deberia levantar el contenedor de la base de datos y el **health** y **health/dependencies** deberian funcionar correctamente (modificar el archivo docker-compose.yaml segun sea requerido, agregando o quitando servicios).
+
+4. Para ejecutar el proyecto:
 ```bash
 go run main.go
 ```
@@ -84,17 +94,6 @@ go run main.go
 - - **internal/container**: Contiene la inicialización y gestión de dependencias.
 - **internal/models**: Contiene los modelos de datos específicos de la aplicación.
 - **pkg/gorm**: Maneja la conexión a la base de datos.
-
-## Para realizar prebas en local
-1. Ir a la carpeta **docker**
-```bash
-cd docker/
-```
-2. Ejecutar la construcion de los contenedores
-```bash
-docker-compose up
-```
-3. Con esto deberia levantar el contenedor de la base de datos y el health y health/dependencies deberian funcionar correctamente (modificar el archivo docker-compose.yaml segun sea requerido, agregando o quitando servicios).
 
 ## Tecnologías Utilizadas
 
