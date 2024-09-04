@@ -91,7 +91,7 @@ go run main.go
 - **docker/postgres**: Contiene los archivos para iniciar el contenedor con la BD, 
 - **internal/app**: Contiene la lógica de la aplicación, incluyendo controladores, repositorios y servicios.
 - **internal/config**: Contiene la configuración de la aplicación.
-- - **internal/container**: Contiene la inicialización y gestión de dependencias.
+- **internal/container**: Contiene la inicialización y gestión de dependencias.
 - **internal/models**: Contiene los modelos de datos específicos de la aplicación.
 - **pkg/gorm**: Maneja la conexión a la base de datos.
 
