@@ -1,8 +1,8 @@
-# Fiber Template API
+# Fiber Template RestAPI
 
-Este es un proyecto template de ejemplo que utiliza Fiber, GORM y PostgreSQL para implementar un API REST. Se sigue una estructura modular y buenas prácticas en Go.
+This is a template project example that uses Fiber, GORM, and PostgreSQL to implement a REST API. It follows a modular structure and best practices in Go.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```plaintext
 fiber-template/
@@ -39,19 +39,19 @@ fiber-template/
 ├── go.mod
 └── go.sum
 ```
-## Instalación
-### Clona el repositorio:
+## Installation
+### Clone the repository:
 
 ```bash
 git clone https://github.com/tu_usuario/fiber-template.git
 cd fiber-template
 ```
 
-### Instala las dependencias:
+### Install dependencies:
 ```bash
 go mod tidy
 ```
-### Actualiza las variables del launch.json con la informacion necesaria:
+### Update the variables in launch.json with the required information:
 ```bash
 "POSTGRES_SERVER": "localhost",
 "POSTGRES_DATABASE": "testdb",
@@ -59,59 +59,60 @@ go mod tidy
 "POSTGRES_PASSWORD": "root",
 "POSTGRES_PORT": "5432"
 ```
-Inicia la base de datos PostgreSQL y asegúrate de que las credenciales en el archivo launch.json son correctas.
+Start the PostgreSQL database and make sure the credentials in the launch.json file are correct.
 
-## Ejecuciónde forma local
-1. Ir a la carpeta **docker**
+## Running Locally
+1. Go to the **docker** folder
 ```bash
 cd docker/
 ```
-2. Ejecutar la construcion de los contenedores
+2. Run the container build
 ```bash
 docker-compose up
 ```
-3. Con esto deberia levantar el contenedor de la base de datos y el **health** y **health/dependencies** deberian funcionar correctamente (modificar el archivo docker-compose.yaml segun sea requerido, agregando o quitando servicios).
 
-4. Para ejecutar el proyecto:
+3. This should start the database container, and the health and health/dependencies should work correctly (modify the docker-compose.yaml file as needed, adding or removing services).
+
+4. To run the project:
 ```bash
 go run main.go
 ```
 ## Endpoints
 
-- `GET /health` - Obtiene el estado de la aplicación.
-- `GET /health/dependencies` - Obtiene el estado de las dependencias que ocupa el proyecto (se deben ir agregando).
+- `GET /health` - Gets the application status.
+- `GET /health/dependencies` - Gets the status of the project's dependencies (should be added as needed).
 
-## Estructura de los Paquetes
+## Package Structure
 
-- **.vscode**: Archivo con las variables necesarias para ejecutar el proyecto en modo debug.
-- **cmd/constants**: Contiene el archivo de constantes que se ocupan en el proyecto.
-- **cmd/httpserver**: Contiene la configuración para levantar el server http y sus respectivas rotas.
-- **cmd**: Contiene el archivo de main para arrancar el proyecto.
-- **docker**: Contiene los archivo necesarios para realizar pruebas en local (devcontainers).
-- **docker/postgres**: Contiene los archivos para iniciar el contenedor con la BD, 
-- **internal/app**: Contiene la lógica de la aplicación, incluyendo controladores, repositorios y servicios.
-- **internal/config**: Contiene la configuración de la aplicación.
-- **internal/container**: Contiene la inicialización y gestión de dependencias.
-- **internal/models**: Contiene los modelos de datos específicos de la aplicación.
-- **pkg/gorm**: Maneja la conexión a la base de datos.
+- **.vscode**: Contains the necessary variables to run the project in debug mode.
+- **cmd/constants**: Contains the constants used in the project.
+- **cmd/httpserver**: Contains the configuration to start the HTTP server and its routes.
+- **cmd**: Contains the main file to start the project.
+- **docker**: Contains the files needed for local testing (devcontainers).
+- **docker/postgres**: Contains the files to start the container with the database.
+- **internal/app**: Contains the application logic, including controllers, repositories, and services.
+- **internal/config**: Contains the application configuration.
+- **internal/container**: Contains the initialization and management of dependencies.
+- **internal/models**: Contains the application's data models.
+- **pkg/gorm**: Handles the database connection.
 
 ## Tecnologías Utilizadas
 
-- [Fiber](https://gofiber.io/) - Un framework web inspirado en Express.js.
-- [GORM](https://gorm.io/) - Un ORM para Go.
-- [PostgreSQL](https://www.postgresql.org/) - Un sistema de gestión de bases de datos relacional.
+- [Fiber](https://gofiber.io/) - A web framework inspired by Express.js.
+- [GORM](https://gorm.io/) - An ORM for Go.
+- [PostgreSQL](https://www.postgresql.org/) - A relational database management system.
 
 ## Contribuciones
 
-Las contribuciones son bienvenidas. Por favor, sigue los siguientes pasos:
+Contributions are welcome. Please follow these steps:
 
-1. Haz un fork del proyecto.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Realiza tus cambios.
-4. Haz un commit de tus cambios (`git commit -am 'Agrega nueva funcionalidad'`).
-5. Haz push a la rama (`git push origin feature/nueva-funcionalidad`).
-6. Abre un Pull Request.
+1. Fork the project.
+2. Create a new branch (git checkout -b feature/new-feature).
+3. Make your changes.
+4. Commit your changes (git commit -am 'Add new feature').
+5. Push to the branch (git push origin feature/new-feature).
+6. Open a Pull Request.
 
-## Licencia
+## License
 
-Este proyecto está licenciado bajo la [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
