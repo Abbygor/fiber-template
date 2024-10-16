@@ -1,0 +1,21 @@
+{
+    "name": "Go Fiber Template",
+    "dockerComposeFile": "../docker/docker-compose.yaml",
+    "service": "fiber-template",
+    "workspaceFolder": "/go/src/fiber-template",
+    "postCreateCommand": "go mod tidy",
+    "remoteUser": "root",
+    "containerEnv": {
+        "PROJECT_NAME": "fiber-template",
+        "PROJECT_VERSION": "1.0.0",
+        "PROJECT_LANGUAGE": "Go",
+        "PORT": "4001",
+        "ENV": "local",
+        "POSTGRES_SERVER": "localhost",
+        "POSTGRES_DATABASE": "books",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "root",
+        "POSTGRES_PORT": "5432"
+    }
+  }
+  
