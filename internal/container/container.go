@@ -2,9 +2,11 @@ package container
 
 import (
 	"context"
+	"fiber-template/internal/app/books"
 	"fiber-template/internal/app/health"
 	"fiber-template/internal/config"
 	"fiber-template/pkg/gorm"
+	"fiber-template/pkg/redis"
 
 	"github.com/rs/zerolog"
 )
@@ -12,12 +14,19 @@ import (
 type Dependencies struct {
 	Config           *config.Config
 	HealthController health.HealthController
+	BooksController  books.BooksController
 }
 
 func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	dependencies := Dependencies{}
 
 	config := config.NewConfig(ctx, l)
+
+	redisClient := redis.NewRedisClient(config)
+	redisConn, err := redisClient.Create(ctx)
+	if err != nil {
+		l.Fatal().Str("module", "container").Str("function", "Build").Msg(err.Error())
+	}
 
 	dbGorm := gorm.NewDBGorm(config)
 	db, err := dbGorm.Create()
@@ -28,6 +37,10 @@ func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	healthRepository := health.NewHealthDatabaseRepository(config, db)
 	serviceHealth := health.NewHealthService(config, healthRepository)
 	dependencies.HealthController = health.NewHealthController(serviceHealth, config)
+
+	booksRepository := books.NewBooksRepository(config, db, redisConn)
+	booksService := books.NewBooksService(booksRepository)
+	dependencies.BooksController = books.NewBooksController(booksService)
 
 	dependencies.Config = config
 

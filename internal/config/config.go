@@ -9,8 +9,9 @@ import (
 
 type (
 	Config struct {
-		ProjectInfo    ProjectInfo
-		GormConnection GormConnection
+		ProjectInfo     ProjectInfo
+		GormConnection  GormConnection
+		RedisConnection RedisConnection
 	}
 )
 
@@ -27,6 +28,11 @@ type GormConnection struct {
 	User     string `env:"POSTGRES_USER,required"`
 	Password string `env:"POSTGRES_PASSWORD,required"`
 	Port     int    `env:"POSTGRES_PORT,default=5432"`
+}
+
+type RedisConnection struct {
+	Server string `env:"REDIS_SERVER,required"`
+	Port   string `env:"REDIS_PORT,required"`
 }
 
 func NewConfig(ctx context.Context, l zerolog.Logger) *Config {
