@@ -2,6 +2,7 @@ package container
 
 import (
 	"context"
+	"fiber-template/internal/app/authors"
 	"fiber-template/internal/app/books"
 	"fiber-template/internal/app/health"
 	"fiber-template/internal/config"
@@ -12,9 +13,10 @@ import (
 )
 
 type Dependencies struct {
-	Config           *config.Config
-	HealthController health.HealthController
-	BooksController  books.BooksController
+	Config            *config.Config
+	HealthController  health.HealthController
+	BooksController   books.BooksController
+	AuthorsController authors.AuthorsController
 }
 
 func Build(ctx context.Context, l zerolog.Logger) Dependencies {
@@ -41,6 +43,10 @@ func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	booksRepository := books.NewBooksRepository(config, db, redisConn)
 	booksService := books.NewBooksService(booksRepository)
 	dependencies.BooksController = books.NewBooksController(booksService)
+
+	authorsRepository := authors.NewAuthorsRepository(config, db, redisConn)
+	authorsService := authors.NewAuthorsService(authorsRepository)
+	dependencies.AuthorsController = authors.NewAuthorsController(authorsService)
 
 	dependencies.Config = config
 
