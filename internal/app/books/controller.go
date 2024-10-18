@@ -103,9 +103,7 @@ func (c *ControllerBooks) UpdateBook(ctx *fiber.Ctx) error {
 		return ctx.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	book.BookID = int(bookID)
-
-	updatedBook, err := c.booksService.UpdateBook(&book)
+	updatedBook, err := c.booksService.UpdateBook(int(bookID), &book)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),

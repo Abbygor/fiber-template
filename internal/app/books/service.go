@@ -11,7 +11,7 @@ type BooksService interface {
 	GetBookByID(int) (*models.Book, error)
 	GetBooksByAuthorID(int) ([]models.Book, error)
 	GetBooks() ([]models.Book, error)
-	UpdateBook(*models.Book) (*models.Book, error)
+	UpdateBook(int, *models.Book) (*models.Book, error)
 	DeleteBook(int) error
 }
 
@@ -72,8 +72,8 @@ func (s *ServiceBooks) GetBooks() ([]models.Book, error) {
 	return books, nil
 }
 
-func (s *ServiceBooks) UpdateBook(book *models.Book) (*models.Book, error) {
-	updatedBook, err := s.bookRepository.UpdateBook(book)
+func (s *ServiceBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, error) {
+	updatedBook, err := s.bookRepository.UpdateBook(bookID, book)
 	if err != nil {
 		return nil, err // Retorna el error si ocurre algún problema
 	}

@@ -13,7 +13,7 @@ type BooksRepository interface {
 	GetBookByID(int) (*models.Book, error)
 	GetBooksByAuthorID(int) ([]models.Book, error)
 	GetBooks() ([]models.Book, error)
-	UpdateBook(*models.Book) (*models.Book, error)
+	UpdateBook(int, *models.Book) (*models.Book, error)
 	DeleteBook(int) error
 }
 
@@ -68,10 +68,17 @@ func (r *RepositoryBooks) GetBooks() ([]models.Book, error) {
 	return books, nil
 }
 
-func (r *RepositoryBooks) UpdateBook(book *models.Book) (*models.Book, error) {
-	if err := r.db.Save(&book).Error; err != nil {
-		return nil, err
+func (r *RepositoryBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, error) {
+	result := r.db.Model(&models.Book{}).Where("book_id = ?", bookID).Updates(book)
+	if result.Error != nil {
+		return nil, result.Error // Retorna error si ocurrió algún problema
 	}
+	if result.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound // Retorna error si no se encontró el libro
+	}
+
+	book.BookID = bookID
+
 	return book, nil
 }
 
