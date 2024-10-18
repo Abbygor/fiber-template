@@ -66,7 +66,7 @@ func (s *ServiceBooks) GetBooks() ([]models.Book, error) {
 	}
 
 	if len(books) == 0 {
-		return nil, errors.New("no books found for this author")
+		return nil, errors.New("no books found")
 	}
 
 	return books, nil
