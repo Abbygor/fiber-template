@@ -40,9 +40,9 @@ func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	serviceHealth := health.NewHealthService(config, healthRepository)
 	dependencies.HealthController = health.NewHealthController(serviceHealth, config)
 
-	booksRepository := books.NewBooksRepository(config, db, redisConn)
-	booksService := books.NewBooksService(booksRepository)
-	dependencies.BooksController = books.NewBooksController(booksService)
+	booksRepository := books.NewBooksRepository(config, db, redisConn, l)
+	booksService := books.NewBooksService(booksRepository, l)
+	dependencies.BooksController = books.NewBooksController(booksService, l)
 
 	authorsRepository := authors.NewAuthorsRepository(config, db, redisConn)
 	authorsService := authors.NewAuthorsService(authorsRepository)

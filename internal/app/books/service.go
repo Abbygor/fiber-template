@@ -1,14 +1,17 @@
 package books
 
 import (
+	"context"
 	"errors"
 	"fiber-template/internal/models"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 type BooksService interface {
 	CreateBook(models.Book) (*models.Book, error)
-	GetBookByID(int) (*models.Book, error)
+	GetBookByID(context.Context, int) (*models.Book, error)
 	GetBooksByAuthorID(int) ([]models.Book, error)
 	GetBooks() ([]models.Book, error)
 	UpdateBook(int, *models.Book) (*models.Book, error)
@@ -17,11 +20,13 @@ type BooksService interface {
 
 type ServiceBooks struct {
 	bookRepository BooksRepository
+	l              zerolog.Logger
 }
 
-func NewBooksService(repo BooksRepository) BooksService {
+func NewBooksService(repo BooksRepository, log zerolog.Logger) BooksService {
 	return &ServiceBooks{
 		bookRepository: repo,
+		l:              log,
 	}
 }
 
@@ -38,8 +43,8 @@ func (s *ServiceBooks) CreateBook(book models.Book) (*models.Book, error) {
 	return s.bookRepository.CreateBook(book)
 }
 
-func (s *ServiceBooks) GetBookByID(bookID int) (*models.Book, error) {
-	book, err := s.bookRepository.GetBookByID(bookID)
+func (s *ServiceBooks) GetBookByID(ctx context.Context, bookID int) (*models.Book, error) {
+	book, err := s.bookRepository.GetBookByID(ctx, bookID)
 	if err != nil {
 		return nil, err
 	}

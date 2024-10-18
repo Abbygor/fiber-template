@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 )
 
@@ -19,11 +20,13 @@ type BooksController interface {
 
 type ControllerBooks struct {
 	booksService BooksService
+	l            zerolog.Logger
 }
 
-func NewBooksController(booksService BooksService) BooksController {
+func NewBooksController(booksService BooksService, log zerolog.Logger) BooksController {
 	return &ControllerBooks{
 		booksService: booksService,
+		l:            log,
 	}
 }
 
@@ -50,7 +53,7 @@ func (c *ControllerBooks) GetBookByID(ctx *fiber.Ctx) error {
 		})
 	}
 
-	book, err := c.booksService.GetBookByID(int(bookID))
+	book, err := c.booksService.GetBookByID(ctx.Context(), int(bookID))
 	if err != nil {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": err.Error(),
