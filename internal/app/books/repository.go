@@ -153,7 +153,8 @@ func (r *RepositoryBooks) UpdateBook(bookID int, book *models.Book) (*models.Boo
 			Err(result.Error).
 			Str("module", "books_repository").
 			Str("function", "UpdateBook").
-			Msg("error getting books from DB")
+			Int("book_id", bookID).
+			Msg("error updating books from DB")
 		return nil, result.Error // Retorna error si ocurrió algún problema
 	}
 	if result.RowsAffected == 0 {
@@ -161,7 +162,8 @@ func (r *RepositoryBooks) UpdateBook(bookID int, book *models.Book) (*models.Boo
 			Err(gorm.ErrRecordNotFound).
 			Str("module", "books_repository").
 			Str("function", "UpdateBook").
-			Msg("error getting books from DB")
+			Int("book_id", bookID).
+			Msg("error updating books from DB")
 		return nil, gorm.ErrRecordNotFound // Retorna error si no se encontró el libro
 	}
 
@@ -177,6 +179,7 @@ func (r *RepositoryBooks) DeleteBook(bookID int) error {
 			Err(result.Error).
 			Str("module", "books_repository").
 			Str("function", "DeleteBook").
+			Int("book_id", bookID).
 			Msg("error deleting book from DB")
 		return result.Error
 	}
@@ -185,6 +188,7 @@ func (r *RepositoryBooks) DeleteBook(bookID int) error {
 			Err(gorm.ErrRecordNotFound).
 			Str("module", "books_repository").
 			Str("function", "DeleteBook").
+			Int("book_id", bookID).
 			Msg("error deleting book from DB")
 		return gorm.ErrRecordNotFound
 	}

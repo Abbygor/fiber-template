@@ -44,9 +44,9 @@ func Build(ctx context.Context, l zerolog.Logger) Dependencies {
 	booksService := books.NewBooksService(booksRepository, l)
 	dependencies.BooksController = books.NewBooksController(booksService, l)
 
-	authorsRepository := authors.NewAuthorsRepository(config, db, redisConn)
-	authorsService := authors.NewAuthorsService(authorsRepository)
-	dependencies.AuthorsController = authors.NewAuthorsController(authorsService)
+	authorsRepository := authors.NewAuthorsRepository(config, db, redisConn, l)
+	authorsService := authors.NewAuthorsService(authorsRepository, l)
+	dependencies.AuthorsController = authors.NewAuthorsController(authorsService, l)
 
 	dependencies.Config = config
 

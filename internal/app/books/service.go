@@ -132,6 +132,7 @@ func (s *ServiceBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, 
 			Err(err).
 			Str("module", "books_service").
 			Str("function", "UpdateBook").
+			Int("book_id", bookID).
 			Msg("error updating book from repository")
 		return nil, err // Retorna el error si ocurre algún problema
 	}
@@ -145,6 +146,7 @@ func (s *ServiceBooks) DeleteBook(bookID int) error {
 			Err(err).
 			Str("module", "books_service").
 			Str("function", "DeleteBook").
+			Int("book_id", bookID).
 			Msg("error deleting book from repository")
 		return err // Retorna el error si ocurrió algún problema
 	}
