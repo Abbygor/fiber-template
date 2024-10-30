@@ -13,12 +13,12 @@ import (
 )
 
 type BooksRepository interface {
-	CreateBook(models.Book) (*models.Book, error)
+	CreateBook(context.Context, models.Book) (*models.Book, error)
 	GetBookByID(context.Context, int) (*models.Book, error)
-	GetBooksByAuthorID(int) ([]models.Book, error)
-	GetBooks() ([]models.Book, error)
-	UpdateBook(int, *models.Book) (*models.Book, error)
-	DeleteBook(int) error
+	GetBooksByAuthorID(context.Context, int) ([]models.Book, error)
+	GetBooks(context.Context) ([]models.Book, error)
+	UpdateBook(context.Context, int, *models.Book) (*models.Book, error)
+	DeleteBook(context.Context, int) error
 }
 
 type RepositoryBooks struct {
@@ -37,7 +37,7 @@ func NewBooksRepository(cfg *config.Config, db *gorm.DB, redis *redis.Client, lo
 	}
 }
 
-func (r *RepositoryBooks) CreateBook(book models.Book) (*models.Book, error) {
+func (r *RepositoryBooks) CreateBook(ctx context.Context, book models.Book) (*models.Book, error) {
 	// Crear el libro en la base de datos
 	if err := r.db.Create(&book).Error; err != nil {
 		r.l.Error().
@@ -45,6 +45,19 @@ func (r *RepositoryBooks) CreateBook(book models.Book) (*models.Book, error) {
 			Str("module", "books_repository").
 			Str("function", "CreateBook").
 			Msg("error creating book in DB")
+		return nil, err
+	}
+
+	cacheKey := "book:" + string(rune(book.BookID))
+	bookJSON, _ := json.Marshal(book)
+	err := r.redis.Set(ctx, cacheKey, bookJSON, 10*time.Minute).Err()
+	if err != nil {
+		r.l.Error().
+			Err(err).
+			Str("module", "books_repository").
+			Str("function", "CreateBook").
+			Int("book_id", book.BookID).
+			Msg("error setting book in redis")
 		return nil, err
 	}
 
@@ -116,7 +129,7 @@ func (r *RepositoryBooks) GetBookByID(ctx context.Context, bookID int) (*models.
 		Msg("Fetching book by ID from Redis")
 	return &book, nil
 }
-func (r *RepositoryBooks) GetBooksByAuthorID(authorID int) ([]models.Book, error) {
+func (r *RepositoryBooks) GetBooksByAuthorID(ctx context.Context, authorID int) ([]models.Book, error) {
 	var books []models.Book
 
 	if err := r.db.Where("author_id = ?", authorID).Find(&books).Error; err != nil {
@@ -132,8 +145,21 @@ func (r *RepositoryBooks) GetBooksByAuthorID(authorID int) ([]models.Book, error
 
 }
 
-func (r *RepositoryBooks) GetBooks() ([]models.Book, error) {
+func (r *RepositoryBooks) GetBooks(ctx context.Context) ([]models.Book, error) {
 	var books []models.Book
+	cacheKey := "books:all"
+
+	cachedBooks, err := r.redis.Get(ctx, cacheKey).Result()
+	if err == nil {
+		if err := json.Unmarshal([]byte(cachedBooks), &books); err != nil {
+			r.l.Error().
+				Err(err).
+				Str("module", "books_repository").
+				Str("function", "GetBooks").
+				Msg("error getting books from cache")
+			return books, nil
+		}
+	}
 
 	if err := r.db.Find(&books).Error; err != nil {
 		r.l.Error().
@@ -143,10 +169,24 @@ func (r *RepositoryBooks) GetBooks() ([]models.Book, error) {
 			Msg("error getting books from DB")
 		return nil, err
 	}
+
+	booksJSON, err := json.Marshal(books)
+	if err == nil {
+		err = r.redis.Set(ctx, cacheKey, booksJSON, 10*time.Minute).Err()
+		if err != nil {
+			r.l.Error().
+				Err(err).
+				Str("module", "books_repository").
+				Str("function", "GetBooks").
+				Msg("error stored books in redis")
+			return nil, err
+		}
+	}
+
 	return books, nil
 }
 
-func (r *RepositoryBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, error) {
+func (r *RepositoryBooks) UpdateBook(ctx context.Context, bookID int, book *models.Book) (*models.Book, error) {
 	result := r.db.Model(&models.Book{}).Where("book_id = ?", bookID).Updates(book)
 	if result.Error != nil {
 		r.l.Error().
@@ -169,10 +209,34 @@ func (r *RepositoryBooks) UpdateBook(bookID int, book *models.Book) (*models.Boo
 
 	book.BookID = bookID
 
+	cacheKey := "book:" + string(rune(book.BookID))
+	bookJSON, _ := json.Marshal(book)
+	err := r.redis.Set(ctx, cacheKey, bookJSON, 10*time.Minute).Err()
+	if err != nil {
+		r.l.Error().
+			Err(err).
+			Str("module", "books_repository").
+			Str("function", "UpdateBook").
+			Int("book_id", book.BookID).
+			Msg("error setting book in redis")
+		return nil, err
+	}
+
+	booksCacheKey := "books:all"
+	err = r.redis.Del(ctx, booksCacheKey).Err()
+	if err != nil {
+		r.l.Error().
+			Err(err).
+			Str("module", "books_repository").
+			Str("function", "DeleteBook").
+			Msg("error deleting all books in redis")
+		return nil, err
+	}
+
 	return book, nil
 }
 
-func (r *RepositoryBooks) DeleteBook(bookID int) error {
+func (r *RepositoryBooks) DeleteBook(ctx context.Context, bookID int) error {
 	result := r.db.Delete(&models.Book{}, bookID)
 	if result.Error != nil {
 		r.l.Error().
@@ -192,5 +256,18 @@ func (r *RepositoryBooks) DeleteBook(bookID int) error {
 			Msg("error deleting book from DB")
 		return gorm.ErrRecordNotFound
 	}
+
+	cacheKey := "book:" + string(rune(bookID))
+	err := r.redis.Del(ctx, cacheKey).Err()
+	if err != nil {
+		r.l.Error().
+			Err(err).
+			Str("module", "books_repository").
+			Str("function", "DeleteBook").
+			Int("book_id", bookID).
+			Msg("error setting book in redis")
+		return err
+	}
+
 	return nil
 }

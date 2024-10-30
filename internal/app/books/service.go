@@ -10,12 +10,12 @@ import (
 )
 
 type BooksService interface {
-	CreateBook(models.Book) (*models.Book, error)
+	CreateBook(context.Context, models.Book) (*models.Book, error)
 	GetBookByID(context.Context, int) (*models.Book, error)
-	GetBooksByAuthorID(int) ([]models.Book, error)
-	GetBooks() ([]models.Book, error)
-	UpdateBook(int, *models.Book) (*models.Book, error)
-	DeleteBook(int) error
+	GetBooksByAuthorID(context.Context, int) ([]models.Book, error)
+	GetBooks(context.Context) ([]models.Book, error)
+	UpdateBook(context.Context, int, *models.Book) (*models.Book, error)
+	DeleteBook(context.Context, int) error
 }
 
 type ServiceBooks struct {
@@ -30,7 +30,7 @@ func NewBooksService(repo BooksRepository, log zerolog.Logger) BooksService {
 	}
 }
 
-func (s *ServiceBooks) CreateBook(book models.Book) (*models.Book, error) {
+func (s *ServiceBooks) CreateBook(ctx context.Context, book models.Book) (*models.Book, error) {
 	if book.Title == "" {
 		s.l.Error().
 			Str("module", "books_service").
@@ -50,7 +50,7 @@ func (s *ServiceBooks) CreateBook(book models.Book) (*models.Book, error) {
 		return nil, errors.New("publishdate field malformed")
 	}
 
-	bookCreated, err := s.bookRepository.CreateBook(book)
+	bookCreated, err := s.bookRepository.CreateBook(ctx, book)
 	if err != nil {
 		s.l.Error().
 			Str("module", "books_service").
@@ -78,8 +78,8 @@ func (s *ServiceBooks) GetBookByID(ctx context.Context, bookID int) (*models.Boo
 	return book, nil
 }
 
-func (s *ServiceBooks) GetBooksByAuthorID(authorID int) ([]models.Book, error) {
-	books, err := s.bookRepository.GetBooksByAuthorID(authorID)
+func (s *ServiceBooks) GetBooksByAuthorID(ctx context.Context, authorID int) ([]models.Book, error) {
+	books, err := s.bookRepository.GetBooksByAuthorID(ctx, authorID)
 	if err != nil {
 		s.l.Error().
 			Err(err).
@@ -102,8 +102,8 @@ func (s *ServiceBooks) GetBooksByAuthorID(authorID int) ([]models.Book, error) {
 
 	return books, nil
 }
-func (s *ServiceBooks) GetBooks() ([]models.Book, error) {
-	books, err := s.bookRepository.GetBooks()
+func (s *ServiceBooks) GetBooks(ctx context.Context) ([]models.Book, error) {
+	books, err := s.bookRepository.GetBooks(ctx)
 	if err != nil {
 		s.l.Error().
 			Err(err).
@@ -125,8 +125,8 @@ func (s *ServiceBooks) GetBooks() ([]models.Book, error) {
 	return books, nil
 }
 
-func (s *ServiceBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, error) {
-	updatedBook, err := s.bookRepository.UpdateBook(bookID, book)
+func (s *ServiceBooks) UpdateBook(ctx context.Context, bookID int, book *models.Book) (*models.Book, error) {
+	updatedBook, err := s.bookRepository.UpdateBook(ctx, bookID, book)
 	if err != nil {
 		s.l.Error().
 			Err(err).
@@ -139,8 +139,8 @@ func (s *ServiceBooks) UpdateBook(bookID int, book *models.Book) (*models.Book, 
 	return updatedBook, nil // Retorna el libro actualizado
 }
 
-func (s *ServiceBooks) DeleteBook(bookID int) error {
-	err := s.bookRepository.DeleteBook(bookID)
+func (s *ServiceBooks) DeleteBook(ctx context.Context, bookID int) error {
+	err := s.bookRepository.DeleteBook(ctx, bookID)
 	if err != nil {
 		s.l.Error().
 			Err(err).

@@ -41,7 +41,7 @@ func (c *ControllerBooks) CreateBook(ctx *fiber.Ctx) error {
 		return ctx.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	createdBook, err := c.booksService.CreateBook(book)
+	createdBook, err := c.booksService.CreateBook(ctx.Context(), book)
 	if err != nil {
 		c.l.Error().
 			Err(err).
@@ -100,7 +100,7 @@ func (c *ControllerBooks) GetBooksByAuthorID(ctx *fiber.Ctx) error {
 		})
 	}
 
-	books, err := c.booksService.GetBooksByAuthorID(int(authorID))
+	books, err := c.booksService.GetBooksByAuthorID(ctx.Context(), int(authorID))
 	if err != nil {
 		c.l.Error().
 			Err(err).
@@ -116,7 +116,7 @@ func (c *ControllerBooks) GetBooksByAuthorID(ctx *fiber.Ctx) error {
 	return ctx.JSON(books)
 }
 func (c *ControllerBooks) GetBooks(ctx *fiber.Ctx) error {
-	books, err := c.booksService.GetBooks()
+	books, err := c.booksService.GetBooks(ctx.Context())
 	if err != nil {
 		c.l.Error().
 			Err(err).
@@ -156,7 +156,7 @@ func (c *ControllerBooks) UpdateBook(ctx *fiber.Ctx) error {
 		return ctx.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	updatedBook, err := c.booksService.UpdateBook(int(bookID), &book)
+	updatedBook, err := c.booksService.UpdateBook(ctx.Context(), int(bookID), &book)
 	if err != nil {
 		c.l.Error().
 			Err(err).
@@ -187,7 +187,7 @@ func (c *ControllerBooks) DeleteBook(ctx *fiber.Ctx) error {
 		})
 	}
 
-	err = c.booksService.DeleteBook(int(bookID))
+	err = c.booksService.DeleteBook(ctx.Context(), int(bookID))
 	responseStatus := fiber.StatusInternalServerError
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
