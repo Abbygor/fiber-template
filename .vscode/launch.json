@@ -17,7 +17,9 @@
                 "POSTGRES_DATABASE": "books",
                 "POSTGRES_USER": "postgres",
                 "POSTGRES_PASSWORD": "root",
-                "POSTGRES_PORT": "5432"
+                "POSTGRES_PORT": "5432",
+                "REDIS_SERVER": "localhost",
+                "REDIS_PORT": "6379"
             },
             "args": [],
             "showLog": true,
